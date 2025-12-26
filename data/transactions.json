@@ -1,0 +1,6 @@
+[
+  { "name": "Starbucks", "amount": 5.75, "date": "2024-10-01" },
+  { "name": "Uber", "amount": 23.40, "date": "2024-10-02" },
+  { "name": "Netflix", "amount": 15.49, "date": "2024-10-03" },
+  { "name": "Rent", "amount": 1200.00, "date": "2024-10-01" }
+]
