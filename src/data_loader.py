@@ -1,4 +1,5 @@
 from plaid_client import fetch_transactions
+from datetime import datetime
 
 def load_transactions(_=None):
     raw_transactions = fetch_transactions()
@@ -36,3 +37,4 @@ def load_transactions(_=None):
         })
 
     return transactions
+

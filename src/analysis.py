@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 CATEGORY_REMAP = {
     "Transfer Out": "Transfers",
     "Loan Payments": "Bills",
@@ -28,3 +30,36 @@ def calculate_spending_summary(transactions):
     }
 
     return expenses, income_total
+
+def compare_periods(current_tx, previous_tx):
+    def summarize(transactions):
+        totals = defaultdict(float)
+        for t in transactions:
+            # STRICT: expenses only
+            if t["amount"] >= 0:
+                continue
+            if t["category"].lower() == "income":
+                continue
+
+            totals[t["category"]] += abs(t["amount"])
+        return totals
+
+
+    current = summarize(current_tx)
+    previous = summarize(previous_tx)
+
+    comparison = {}
+    all_categories = set(current) | set(previous)
+
+    for category in all_categories:
+        curr_amt = current.get(category, 0)
+        prev_amt = previous.get(category, 0)
+        delta = curr_amt - prev_amt
+
+        comparison[category] = {
+            "current": curr_amt,
+            "previous": prev_amt,
+            "delta": delta,
+        }
+
+    return comparison

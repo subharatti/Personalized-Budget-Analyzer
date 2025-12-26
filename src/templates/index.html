@@ -108,6 +108,16 @@
             padding: 10px;
             border: 1px solid var(--border);
         }
+        .positive {
+            color: #1f7a1f;
+            font-weight: 600;
+        }
+
+        .negative {
+            color: #b00020;
+            font-weight: 600;
+        }
+
 
         footer {
             text-align: center;
@@ -147,6 +157,32 @@
         <div class="income">
             Total Income: ${{ "%.2f"|format(income_total) }}
         </div>
+    </div>
+
+    <div class="card">
+        <h2>Spending Changes (Last 30 Days)</h2>
+
+        <table>
+            <tr>
+                <th>Category</th>
+                <th>Previous</th>
+                <th>Current</th>
+                <th>Change</th>
+            </tr>
+
+            {% for category, data in comparison.items() %}
+            <tr>
+                <td>{{ category }}</td>
+                <td>${{ "%.2f"|format(data.previous) }}</td>
+                <td>${{ "%.2f"|format(data.current) }}</td>
+                <td class="{% if data.delta > 0 %}negative{% else %}positive{% endif %}">
+                    {% if data.delta > 0 %}+{% endif %}
+                    ${{ "%.2f"|format(data.delta) }}
+                </td>
+
+            </tr>
+            {% endfor %}
+        </table>
     </div>
 
     <div class="card">
