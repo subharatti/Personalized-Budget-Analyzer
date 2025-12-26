@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Personal Budget Analyzer</title>
+
+    <style>
+        :root {
+            --green-dark: #1f7a1f;
+            --green-medium: #3fa34d;
+            --green-light: #e8f5e9;
+            --bg: #f6fbf6;
+            --border: #d9e8d9;
+            --text: #1e2a1e;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: "Segoe UI", Roboto, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--green-dark);
+            margin-bottom: 10px;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: var(--green-dark);
+        }
+
+        .subtitle {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #5f7f5f;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 24px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 10px;
+            border-bottom: 2px solid var(--border);
+            color: var(--green-dark);
+        }
+
+        td {
+            padding: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .amount {
+            text-align: right;
+            font-weight: 600;
+        }
+
+        .income {
+            margin-top: 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--green-medium);
+        }
+
+        .charts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-top: 20px;
+        }
+
+        .chart {
+            text-align: center;
+        }
+
+        .chart img {
+            max-width: 100%;
+            border-radius: 8px;
+            background: white;
+            padding: 10px;
+            border: 1px solid var(--border);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            font-size: 0.9rem;
+            color: #7a9f7a;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+
+    <h1>Personal Budget Analyzer</h1>
+    <p class="subtitle">An overview of your spending and income</p>
+
+    <div class="card">
+        <h2>Spending Summary</h2>
+
+        <table>
+            <thead>
+            <tr>
+                <th>Category</th>
+                <th class="amount">Amount</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for category, amount in expenses.items() %}
+            <tr>
+                <td>{{ category }}</td>
+                <td class="amount">${{ "%.2f"|format(amount) }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="income">
+            Total Income: ${{ "%.2f"|format(income_total) }}
+        </div>
+    </div>
+
+    <div class="card">
+        <h2>Charts</h2>
+
+        <div class="charts">
+            <div class="chart">
+                <img src="/static/spending_pie.png" alt="Spending Pie Chart">
+            </div>
+            <div class="chart">
+                <img src="/static/spending_bar.png" alt="Spending Bar Chart">
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        Built with Flask - Plaid API - Python
+    </footer>
+
+</div>
+</body>
+</html>

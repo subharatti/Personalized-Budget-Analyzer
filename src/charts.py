@@ -32,7 +32,7 @@ def plot_spending_pie(expenses):
     plt.title("Spending by Category", fontsize=14, fontweight="bold")
     plt.tight_layout()
 
-    plt.savefig("spending_pie.png", bbox_inches="tight")
+    plt.savefig("src/static/spending_pie.png", bbox_inches="tight")
     plt.close()
 
 
@@ -49,5 +49,5 @@ def plot_spending_bar(expenses):
     plt.title("Spending by Category", fontsize=14, fontweight="bold")
 
     plt.tight_layout()
-    plt.savefig("spending_bar.png")
+    plt.savefig("src/static/spending_bar.png", bbox_inches="tight")
     plt.close()

@@ -1,3 +1,4 @@
 plaid-python
 requests
 matplotlib
+flask
