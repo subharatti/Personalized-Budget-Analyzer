@@ -2,3 +2,6 @@ plaid-python
 requests
 matplotlib
 flask
+transformers
+torch
+accelerate

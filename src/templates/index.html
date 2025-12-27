@@ -125,6 +125,92 @@
             font-size: 0.9rem;
             color: #7a9f7a;
         }
+
+        .ask-box {
+            margin-top: 30px; 
+            margin-bottom: 40px;           
+            padding: 20px;
+            border-radius: 12px;
+            background: white;            
+            border: 1px solid #dfeedd;    
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+        }
+
+        .ask-input {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid #d0d0d0;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        .ask-button {
+            margin-top: 14px;
+            padding: 10px 18px;
+            border-radius: 8px;
+            border: none;
+            background: #2e7d32;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .ask-button:hover {
+            background: #1b5e20;
+        }
+
+        .loading {
+            display: none;
+            margin-top: 10px;
+            font-style: italic;
+            color: #2e7d32;
+        }
+
+        .ask-button:disabled {
+            background: #9ccc9c;
+            cursor: not-allowed;
+        }
+
+        .spinner {
+            width: 14px;
+            height: 14px;
+            border: 2px solid white;
+            border-top: 2px solid transparent;
+            border-radius: 50%;
+            display: inline-block;
+            margin-left: 8px;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .answer-box {
+            margin-top: 18px;
+            padding: 14px;
+            border-radius: 10px;
+            background: #f9fff9;
+            border: 1px solid #dfeedd;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
     </style>
 </head>
 
@@ -185,6 +271,24 @@
         </table>
     </div>
 
+    <div class="ask-box">
+        <h2>Ask About Your Spending</h2>
+
+        <input
+            id="questionInput"
+            type="text"
+            class="ask-input"
+            placeholder="e.g. Why did my spending increase this month?"
+        />
+
+        <button class="ask-button" id="askBtn" onclick="submitQuestion()">
+            <span id="askText">Ask</span>
+            <span id="spinner" class="spinner hidden"></span>
+        </button>
+
+        <div id="answerBox" class="answer-box hidden"></div>
+    </div>
+
     <div class="card">
         <h2>Charts</h2>
 
@@ -203,5 +307,53 @@
     </footer>
 
 </div>
+<script>
+function showLoading() {
+    document.getElementById("loading").style.display = "block";
+}
+</script>
+
+<script>
+function submitQuestion() {
+    const input = document.getElementById("questionInput");
+    const question = input.value.trim();
+
+    if (!question) {
+        alert("Please enter a question");
+        return;
+    }
+
+    const btn = document.getElementById("askBtn");
+    const spinner = document.getElementById("spinner");
+    const text = document.getElementById("askText");
+    const answerBox = document.getElementById("answerBox");
+
+    btn.disabled = true;
+    spinner.classList.remove("hidden");
+    text.innerText = "Thinking...";
+    answerBox.classList.add("hidden");
+
+    fetch("/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question })
+    })
+    .then(res => res.json())
+    .then(data => {
+        answerBox.innerText = data.answer;
+        answerBox.classList.remove("hidden");
+    })
+    .catch(() => {
+        answerBox.innerText = "Something went wrong. Please try again.";
+        answerBox.classList.remove("hidden");
+    })
+    .finally(() => {
+        btn.disabled = false;
+        spinner.classList.add("hidden");
+        text.innerText = "Ask";
+    });
+}
+</script>
+
 </body>
 </html>

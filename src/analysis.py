@@ -31,30 +31,30 @@ def calculate_spending_summary(transactions):
 
     return expenses, income_total
 
-def compare_periods(current_tx, previous_tx):
+def compare_periods(current_tx, previous_tx, min_change=50):
+    from collections import defaultdict
+
     def summarize(transactions):
         totals = defaultdict(float)
         for t in transactions:
-            # STRICT: expenses only
-            if t["amount"] >= 0:
-                continue
-            if t["category"].lower() == "income":
-                continue
-
-            totals[t["category"]] += abs(t["amount"])
+            if t["amount"] < 0: 
+                totals[t["category"]] += abs(t["amount"])
         return totals
-
 
     current = summarize(current_tx)
     previous = summarize(previous_tx)
 
     comparison = {}
-    all_categories = set(current) | set(previous)
 
-    for category in all_categories:
+    for category in current:
         curr_amt = current.get(category, 0)
         prev_amt = previous.get(category, 0)
         delta = curr_amt - prev_amt
+
+        if curr_amt == 0:
+            continue
+        if abs(delta) < min_change:
+            continue
 
         comparison[category] = {
             "current": curr_amt,
