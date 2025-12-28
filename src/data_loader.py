@@ -1,4 +1,4 @@
-from plaid_client import fetch_transactions
+from src.plaid_client import fetch_transactions
 from datetime import datetime
 
 def load_transactions(_=None):

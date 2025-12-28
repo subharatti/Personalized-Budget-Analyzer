@@ -1,13 +1,17 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify, request
+from flask_cors import CORS
 from datetime import datetime, timedelta
 
-from data_loader import load_transactions
-from analysis import calculate_spending_summary, compare_periods, detect_lifestyle_inflation, detect_spending_anomalies
-from charts import plot_spending_pie, plot_spending_bar
+from src.data_loader import load_transactions
+from src.analysis import (
+    calculate_spending_summary,
+    compare_periods,
+    detect_lifestyle_inflation,
+    detect_spending_anomalies
+)
+from src.charts import plot_spending_pie, plot_spending_bar
+from src.hf_assistant import ask_finance_question
 
-from hf_assistant import ask_finance_question
-from flask import jsonify, request
-from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
