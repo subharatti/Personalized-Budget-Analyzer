@@ -7,3 +7,4 @@ torch
 accelerate
 gunicorn
 numpy
+flask-cors
