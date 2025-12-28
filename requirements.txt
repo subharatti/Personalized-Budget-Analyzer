@@ -1,10 +1,8 @@
-plaid-python
-requests
-matplotlib
 flask
+flask-cors
+gunicorn
+matplotlib
+numpy
+plaid-python
 transformers
 torch
-accelerate
-gunicorn
-numpy
-flask-cors
