@@ -94,3 +94,26 @@ def detect_lifestyle_inflation(comparison):
         "total_increase": round(total_increase, 2),
         "top_drivers": increased[:3], 
     }
+
+def detect_spending_anomalies(comparison, threshold=1.8):
+    anomalies = []
+
+    for category, data in comparison.items():
+        current = data.current if hasattr(data, "current") else data.get("current", 0)
+        previous = data.previous if hasattr(data, "previous") else data.get("previous", 0)
+
+        if previous == 0 and current > 0:
+            anomalies.append({
+                "category": category,
+                "reason": "appeared for the first time",
+                "severity": "medium"
+            })
+
+        elif previous > 0 and current / previous >= threshold:
+            anomalies.append({
+                "category": category,
+                "reason": "spiked significantly",
+                "severity": "high"
+            })
+
+    return anomalies

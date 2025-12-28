@@ -2,14 +2,15 @@ from flask import Flask, render_template
 from datetime import datetime, timedelta
 
 from data_loader import load_transactions
-from analysis import calculate_spending_summary, compare_periods, detect_lifestyle_inflation
+from analysis import calculate_spending_summary, compare_periods, detect_lifestyle_inflation, detect_spending_anomalies
 from charts import plot_spending_pie, plot_spending_bar
 
 from hf_assistant import ask_finance_question
 from flask import jsonify, request
+from flask_cors import CORS
 
 app = Flask(__name__)
-
+CORS(app)
 
 def normalize_date(d):
     if isinstance(d, datetime):
@@ -39,6 +40,7 @@ def index():
 
     comparison = compare_periods(current_period, previous_period)
     inflation = detect_lifestyle_inflation(comparison)
+    anomalies = detect_spending_anomalies(comparison)
 
     plot_spending_pie(expenses)
     plot_spending_bar(expenses)
@@ -48,7 +50,9 @@ def index():
         expenses=expenses,
         income_total=income_total,
         comparison=comparison,
-        inflation=inflation
+        inflation=inflation,
+        anomalies=anomalies
+
     )
 
 @app.route("/ask", methods=["POST"])
@@ -230,6 +234,15 @@ def format_changes(comparison):
 
     return " ".join(lines)
 
+@app.route("/api/summary")
+def api_summary():
+    transactions = load_transactions()
+    expenses, income_total = calculate_spending_summary(transactions)
+
+    return jsonify({
+        "expenses": expenses,
+        "income": income_total
+    })
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run()

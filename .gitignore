@@ -1,8 +1,27 @@
 venv/
-
 __pycache__/
 *.pyc
+*.pyo
+.env
+.env.*
 
 .DS_Store
+Thumbs.db
+.vscode/
+.idea/
 
-*.png
+*.log
+
+
+mobile/node_modules/
+mobile/.expo/
+mobile/.env
+mobile/.env.*
+mobile/dist/
+mobile/build/
+
+.cache/
+*.safetensors
+
+src/static/*.png
+
