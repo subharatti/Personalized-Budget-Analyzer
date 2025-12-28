@@ -211,6 +211,10 @@
             }
         }
 
+        ul {
+            margin: 10px 0 0 18px;
+        }
+
     </style>
 </head>
 
@@ -269,6 +273,35 @@
             </tr>
             {% endfor %}
         </table>
+    </div>
+
+    <div class="card">
+        <h2>Lifestyle Inflation Detector</h2>
+
+        {% if inflation.flag %}
+            <p style="margin: 8px 0;">
+                <strong>Status:</strong> <span class="negative">Possible lifestyle inflation</span>
+            </p>
+
+            <p style="margin: 8px 0;">
+                Spending increased across <strong>{{ inflation.count }}</strong> categories
+                (total increase of <strong>${{ "%.2f"|format(inflation.total_increase) }}</strong>).
+            </p>
+
+            <p style="margin: 8px 0;"><strong>Top contributors:</strong></p>
+            <ul>
+                {% for cat, delta in inflation.top_drivers %}
+                    <li>{{ cat }} increased</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p style="margin: 8px 0;">
+                <strong>Status:</strong> <span class="positive">No clear lifestyle inflation detected</span>
+            </p>
+            <p style="margin: 8px 0;">
+                Your spending increases don't look broad or sustained this period.
+            </p>
+        {% endif %}
     </div>
 
     <div class="ask-box">

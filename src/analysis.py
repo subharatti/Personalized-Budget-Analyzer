@@ -63,3 +63,34 @@ def compare_periods(current_tx, previous_tx, min_change=50):
         }
 
     return comparison
+
+def detect_lifestyle_inflation(comparison):
+    discretionary = {
+        "Food And Drink",
+        "Shopping",
+        "Entertainment",
+        "Personal Care",
+        "Travel",
+        "Transportation"
+    }
+
+    increased = []
+    total_increase = 0.0
+
+    for category, data in comparison.items():
+        delta = data.delta if hasattr(data, "delta") else data.get("delta", 0)
+
+        if category in discretionary and delta > 0:
+            increased.append((category, float(delta)))
+            total_increase += float(delta)
+
+    increased.sort(key=lambda x: x[1], reverse=True)
+
+    flagged = (len(increased) >= 1 and total_increase >= 1)
+
+    return {
+        "flag": flagged,
+        "count": len(increased),
+        "total_increase": round(total_increase, 2),
+        "top_drivers": increased[:3], 
+    }

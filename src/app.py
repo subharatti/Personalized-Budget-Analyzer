@@ -2,12 +2,11 @@ from flask import Flask, render_template
 from datetime import datetime, timedelta
 
 from data_loader import load_transactions
-from analysis import calculate_spending_summary, compare_periods
+from analysis import calculate_spending_summary, compare_periods, detect_lifestyle_inflation
 from charts import plot_spending_pie, plot_spending_bar
 
 from hf_assistant import ask_finance_question
 from flask import jsonify, request
-
 
 app = Flask(__name__)
 
@@ -39,6 +38,7 @@ def index():
     ]
 
     comparison = compare_periods(current_period, previous_period)
+    inflation = detect_lifestyle_inflation(comparison)
 
     plot_spending_pie(expenses)
     plot_spending_bar(expenses)
@@ -47,7 +47,8 @@ def index():
         "index.html",
         expenses=expenses,
         income_total=income_total,
-        comparison=comparison
+        comparison=comparison,
+        inflation=inflation
     )
 
 @app.route("/ask", methods=["POST"])
@@ -76,8 +77,43 @@ def ask():
     ]
 
     comparison = compare_periods(current_period, previous_period)
+    inflation = detect_lifestyle_inflation(comparison)
 
     q = question.lower()
+
+    if "lifestyle inflation" in q:
+        if inflation["flag"]:
+            return jsonify({
+                "answer": (
+                    "Yes, your spending pattern shows signs of lifestyle inflation. "
+                    f"Spending increased across {inflation['count']} categories, "
+                    "suggesting a upward shift rather than a one-time expense."
+                )
+            })
+        else:
+            return jsonify({
+                "answer": (
+                    "No clear lifestyle inflation was detected. "
+                    "Recent increases appear limited to one or two categories rather than a broad trend."
+                )
+            })
+
+
+    if "concern" in q or "worried" in q or "problem" in q:
+        if inflation["flag"]:
+            return jsonify({
+                "answer": (
+                    "It may be worth paying attention. Your discretionary spending has increased across "
+                    "multiple categories, which could affect savings if the trend continues."
+                )
+            })
+        else:
+            return jsonify({
+                "answer": (
+                    "There is no immediate cause for concern. "
+                    "Your spending changes do not appear widespread or sustained."
+                )
+            })
 
     if "least" in q or "smallest" in q:
         category = min(expenses, key=expenses.get)
@@ -123,10 +159,12 @@ def ask():
 
     if any(word in q for word in ["why", "increase", "decrease", "trend", "change"]):
         answer = ask_finance_question(
-            question,
-            format_dict(expenses),
-            format_changes(comparison)
+            question=question,
+            spending_summary=format_dict(expenses),
+            spending_changes=format_dict(comparison),
+            inflation=inflation
         )
+
     else:
         answer = "That question is better answered with direct calculations."
 
