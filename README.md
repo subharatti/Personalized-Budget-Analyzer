@@ -59,7 +59,7 @@ It combines transaction analysis, statistical trend detection, data visualizatio
   - Displays spending summaries and AI Q&A
   - Shares the same backend API design as the web app
 
-## Tech Stack
+## Technologies Used
 
 **Backend**
 - Python
