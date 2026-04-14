@@ -2,9 +2,6 @@
 
 A full-stack personal finance dashboard that analyzes spending data, detects trends and anomalies, and lets users ask questions about their finances using an AI assistant.
 
-**Live Demo:**  
-[https://huggingface.co/spaces/subharatti/personalized-budget-analyzer](https://huggingface.co/spaces/subharatti/personalized-budget-analyzer)
-
 
 ## Overview
 
